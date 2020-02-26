@@ -1,74 +1,83 @@
-import React, { useState } from "react";
+import React, { Component } from "react";
 import "./App.css";
 import Person from "./Person/Person";
-// import { render } from "react-dom";
+// import Age from "./Age/Age"
 
-const app = props => {
-  const [personsState, setPersonsState] = useState({
+class App extends Component {
+  state = {
     persons: [
       { name: "Alex", age: 43 },
       { name: "Julia", age: 36 },
-      { name: "Anthony", age: 11 }
+      { name: "Anthony", age: 12 }
     ],
-    otherState: "some other value"
-  });
+    otherState: "some other value",
+    showPersons: false
+  };
 
-  console.log(personsState);
-
-  const switchNameHandler = newName => {
-    // console.log('was clicked')
-    setPersonsState({
+  switchNameHandler = newName => {
+    this.setState({
       persons: [
         { name: newName, age: 43 },
-        { name: "Julia", age: 36 },
-        { name: "Anthony", age: 13 }
+      { name: "Julia", age: 36 },
+      { name: "Anthony", age: 12 }
       ]
     });
   };
 
-  const nameChangedHandler = event => {
-    setPersonsState({
+  nameChangedHandler = event => {
+    this.setState({
       persons: [
-        { name: "Alex", age: 43 },
-        { name: event.target.value, age: 36 },
-        { name: "Anthony", age: 11 }
+        { name: event.target.value, age: 43 },
+        { name: "Julia", age: 36 },
+        { name: "Anthony", age: 12 }
       ]
     });
   };
 
-  const style = {
-    backgroundColor: "white",
-    font: "inherent",
-    border: "1px solid blue",
-    padding: "8px",
-    cursor: "pointer"
-  };
+  togglePersonHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow})
+  }
 
-  return (
+  render () {
+    const style = {
+      backgroundColor: "white",
+      font: "inherent",
+      border: "1px solid blue",
+      padding: "8px",
+      cursor: "pointer"
+    };
+
+    return (
     <div className="App">
-      <h1>Hi, I'm Alex's React App</h1>
-      <p>This really works!</p>
-      <button style={style} onClick={() => switchNameHandler("ALEX!!")}>
-        Switch Name
+      <h1>Hi, this is Alex's React App</h1>
+      <p>This is continuously update as I learn more React!</p>
+      <button 
+        style={style} 
+        onClick={this.togglePersonHandler}>
+        Show Names
       </button>
+      { this.state.showPersons ? 
+      <div>
       <Person
-        name={personsState.persons[0].name}
-        age={personsState.persons[0].age}
-      />
+        name={this.state.persons[0].name}
+        age={this.state.persons[0].age}
+        click={this.switchNameHandler}
+        changed={this.nameChangedHandler}>My Hobbies: Basketball</Person>
       <Person
-        name={personsState.persons[1].name}
-        age={personsState.persons[1].age}
-        click={() => switchNameHandler("Alex!")}
-        changed={nameChangedHandler}
-      />
+        name={this.state.persons[1].name}
+        age={this.state.persons[1].age}
+      />       
       <Person
-        name={personsState.persons[2].name}
-        age={personsState.persons[2].age}
+        name={this.state.persons[2].name}
+        age={this.state.persons[2].age}
       >
-        My Hobbies: Video Games
       </Person>
+      </div> : null
+      }
     </div>
-  );
+    )
+  }
 };
 
-export default app;
+export default App

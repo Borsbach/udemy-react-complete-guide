@@ -1,7 +1,22 @@
 import React, { Component } from "react";
-import "./App.css";
 import Person from "./Person/Person";
-import Radium, { StyleRoot } from "radium"
+import styled from "styled-components";
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary'
+import "./App.css";
+
+const StyledButton = styled.button`
+  background-color: ${props => (props.alt ? "red" : "green")};
+  color: white;
+  font: inherent;
+  border: 1px solid black;
+  padding: 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${props => (props.alt ? "salmon" : "lightgreen")};
+    color: black;
+  }
+`;
 
 class App extends Component {
   state = {
@@ -43,42 +58,30 @@ class App extends Component {
   };
 
   render() {
-    const style = {
-      backgroundColor: "green",
-      color: "white",
-      font: "inherent",
-      border: "1px solid black",
-      padding: "8px",
-      cursor: "pointer",
-      ':hover': {
-        backgroundColor: 'lightgreen',
-        color: 'black'
-      }
-    };
-
     let persons = null;
 
     if (this.state.showPersons) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return (
+            return ( 
+            <ErrorBoundary key={person.id}>
               <Person
                 click={() => this.deletePersonHandler(index)}
-                changed={event => this.nameChangedHandler(event, person.id)}
-                key={person.id}
+                changed={event => this.nameChangedHandler(event, person.id)}               
                 name={person.name}
                 age={person.age}
               />
+            </ErrorBoundary>  
             );
           })}
         </div>
       );
-      style.backgroundColor = "red";
-      style[':hover'] = {
-        backgroundColor: 'salmon',
-        color: 'black'
-      }
+      // style.backgroundColor = "red";
+      // style[':hover'] = {
+      //   backgroundColor: 'salmon',
+      //   color: 'black'
+      // }
     }
 
     // let classes = ['red', 'bold'].join(' ')
@@ -91,20 +94,21 @@ class App extends Component {
     }
 
     return (
-      <StyleRoot>
-        <div className="App">
-          <h1>Hi, this is Alex's React App</h1>
-          <p className={classes.join(" ")}>
-            This is continuously updated as I learn more React!
-          </p>
-          <button style={style} onClick={this.togglePersonHandler}>
-            Toggle Names
-          </button>
-          {persons}
-        </div>
-      </StyleRoot>
+      <div className="App">
+        <h1>Hi, this is Alex's React App</h1>
+        <p className={classes.join(" ")}>
+          This is continuously updated as I learn more React!
+        </p>
+        <StyledButton
+          alt={this.state.showPersons}
+          onClick={this.togglePersonHandler}
+        >
+          Toggle Names
+        </StyledButton>
+        {persons}
+      </div>
     );
   }
 }
 
-export default Radium(App);
+export default App;

@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useContext } from "react";
+import AuthContext from '../../context/auth-context'
 import styled from "styled-components";
 import "../Cockpit/Cockpit.css";
 
 const StyledButton = styled.button`
-  background-color: ${props => (props.alternate ? "red" : "green")};
+  background-color: ${(props) => (props.alternate ? "red" : "green")};
   color: white;
   font: inherent;
   border: 1px solid black;
@@ -11,20 +12,26 @@ const StyledButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => (props.alternate ? "salmon" : "lightgreen")};
+    background-color: ${(props) => (props.alternate ? "salmon" : "lightgreen")};
     color: black;
   }
 `;
 
-const cockpit = props => {
+const cockpit = (props) => {
+  const toggleBtnRef = useRef(null);
+  const authContext = useContext(AuthContext)
+
+  console.log(authContext.authenticated)
+
   useEffect(() => {
     console.log("[Cockpit.js] useEffect");
     //Http requests possible
-    const timer = setTimeout(() => {
-      alert("The timer is running");
-    }, 500);
+    // const timer = setTimeout(() => {
+    //   alert("The timer is running");
+    // }, 500);
+    toggleBtnRef.current.click();
     return () => {
-      clearTimeout(timer);
+      // clearTimeout(timer);
       console.log("[Cockpit.js] cleanup work in useEffect");
     };
   }, []);
@@ -56,9 +63,14 @@ const cockpit = props => {
       <p className={classes.join(" ")}>
         This is continuously updated as I learn more React!
       </p>
-      <StyledButton alternate={props.showPersons} onClick={props.clicked}>
+      <StyledButton
+        ref={toggleBtnRef}
+        alternate={props.showPersons}
+        onClick={props.clicked}
+      >
         Toggle Names
-      </StyledButton>
+      </StyledButton>     
+        <StyledButton onClick={authContext.login}>Log in</StyledButton>
     </div>
   );
 };
